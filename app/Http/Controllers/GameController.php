@@ -15,8 +15,49 @@ class GameController extends Controller
 {
     public function index(): View
     {
-        $games = Game::orderBy('created_at', 'desc')->paginate(5);
-        return view('games/index', ['games' => $games]);
+        $user = auth()->user();
+
+        // Récupérer les parties par statut
+        $waitingGames = Game::with(['player1', 'player2', 'gameDecks'])
+            ->where('status', 'waiting')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $inProgressGames = Game::with(['player1', 'player2', 'gameDecks'])
+            ->where('status', 'in_progress')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $finishedGames = Game::with(['player1', 'player2', 'winner', 'gameDecks'])
+            ->where('status', 'finished')
+            ->orderBy('finished_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        $myGames = Game::with(['player1', 'player2', 'winner', 'gameDecks'])
+            ->where(function ($query) use ($user) {
+                $query->where('player1_id', $user->id)
+                    ->orWhere('player2_id', $user->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Statistiques
+        $gamesWaiting = $waitingGames->count();
+        $gamesInProgress = $inProgressGames->count();
+        $gamesFinished = $finishedGames->count();
+        $totalGames = Game::count();
+
+        return view('games/index', compact(
+            'waitingGames',
+            'inProgressGames',
+            'finishedGames',
+            'myGames',
+            'gamesWaiting',
+            'gamesInProgress',
+            'gamesFinished',
+            'totalGames'
+        ));
     }
 
     public function show($id): View
@@ -106,5 +147,45 @@ class GameController extends Controller
     {
         $camps = \App\Models\Camp::with('cards')->where('is_active', true)->get();
         return view('gamedecks/deck-builder', compact('camps'));
+    }
+
+    public function join($id): RedirectResponse
+    {
+        $game = Game::findOrFail($id);
+
+        // Vérifications
+        if ($game->status !== 'waiting') {
+            return redirect()->back()->with('error', 'Cette partie n\'est plus disponible.');
+        }
+
+        if ($game->player1_id === auth()->id()) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas rejoindre votre propre partie.');
+        }
+
+        if ($game->player2_id) {
+            return redirect()->back()->with('error', 'Cette partie est déjà complète.');
+        }
+
+        // Rejoindre la partie
+        $game->update([
+            'player2_id' => auth()->id(),
+            'status' => 'in_progress',
+            'started_at' => now()
+        ]);
+
+        return redirect()->route('admin.game.play', ['id' => $game->id])
+            ->with('success', 'Vous avez rejoint la partie !');
+    }
+
+    public function play($id): View
+    {
+        $game = Game::with(['player1', 'player2', 'gameDecks.card'])->findOrFail($id);
+
+        // Vérifier que l'utilisateur fait partie de la partie
+        if ($game->player1_id !== auth()->id() && $game->player2_id !== auth()->id()) {
+            abort(403, 'Vous ne participez pas à cette partie.');
+        }
+
+        return view('games/play', compact('game'));
     }
 }

@@ -52,7 +52,7 @@
             display: grid;
             grid-template-columns: 1fr 3fr;
             gap: 2rem;
-            /* height: calc(100vh - 200px); */
+            height: calc(100vh - 200px);
             min-height: 600px;
         }
 
@@ -431,11 +431,11 @@
             <div class="camp-selector">
                 <div class="camp-option flammes active" data-camp="flammes" onclick="selectCamp('flammes')">
                     <i class="fas fa-fire"></i>
-                    <div class="mt-1">Flammes Écarlates</div>
+                    <div class="mt-1">Enfers</div>
                 </div>
                 <div class="camp-option glace" data-camp="glace" onclick="selectCamp('glace')">
                     <i class="fas fa-snowflake"></i>
-                    <div class="mt-1">Gardiens de Glace</div>
+                    <div class="mt-1">Sanctuaire</div>
                 </div>
             </div>
 
@@ -607,22 +607,42 @@
         });
         document.querySelector(`[data-camp="${camp}"]`).classList.add('active');
 
-        // Filtrer les cartes
+        // Filtrer les cartes selon les vrais noms des camps
         document.querySelectorAll('.mini-card').forEach(card => {
             const cardCamp = card.dataset.camp;
-            if (camp === 'flammes' && cardCamp.includes('flammes')) {
-                card.style.display = 'block';
-            } else if (camp === 'glace' && cardCamp.includes('gardiens')) {
-                card.style.display = 'block';
+            
+            if (camp === 'flammes') {
+                // Afficher les cartes du camp "enfers"
+                if (cardCamp.includes('enfers')) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            } else if (camp === 'glace') {
+                // Afficher les cartes du camp "sanctuaire"
+                if (cardCamp.includes('sanctuaire')) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
             } else {
-                card.style.display = 'none';
+                // Afficher toutes les cartes
+                card.style.display = 'block';
             }
         });
     }
 
     function dragStart(event) {
-        const cardId = event.target.dataset.cardId;
-        const cardType = event.target.dataset.cardType;
+        const card = event.target.closest('.mini-card');
+        const cardId = card.dataset.cardId;
+        const cardType = card.dataset.cardType;
+        
+        console.log('=== DRAG START DEBUG ===');
+        console.log('Dragging card ID:', cardId);
+        console.log('Dragging card type:', cardType);
+        console.log('Card element:', card);
+        console.log('=======================');
+        
         event.dataTransfer.setData('cardId', cardId);
         event.dataTransfer.setData('cardType', cardType);
     }
@@ -648,12 +668,21 @@
         const cardType = event.dataTransfer.getData('cardType');
         const slotType = slot.dataset.slot;
 
+        // Debug logs
+        console.log('=== DRAG & DROP DEBUG ===');
+        console.log('Card ID:', cardId);
+        console.log('Card Type:', cardType);
+        console.log('Slot Type:', slotType);
+        console.log('========================');
+
         // Vérifier si le type de carte correspond au slot
         if (slotType === 'lieutenant' && cardType !== 'lieutenant') {
+            console.log('ERREUR: Tentative de placer un', cardType, 'dans le slot lieutenant');
             alert('Seuls les lieutenants peuvent être placés dans ce slot !');
             return;
         }
         if (slotType.startsWith('sous_fifre') && cardType !== 'sous_fifre') {
+            console.log('ERREUR: Tentative de placer un', cardType, 'dans un slot sous-fifre');
             alert('Seuls les sous-fifres peuvent être placés dans ce slot !');
             return;
         }

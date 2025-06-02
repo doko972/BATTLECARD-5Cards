@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gamedeck;
+use App\Models\GameDeck;
+use App\Models\Camp;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -13,14 +14,13 @@ class GamedeckController extends Controller
 {
     public function index(): View
     {
-        $gamedecks = Gamedeck::orderBy('created_at', 'desc')->paginate(5);
+        $gamedecks = GameDeck::orderBy('created_at', 'desc')->paginate(5);
         return view('gamedecks/index', ['gamedecks' => $gamedecks]);
     }
 
     public function show($id): View
     {
-        $gamedeck = Gamedeck::findOrFail($id);
-
+        $gamedeck = GameDeck::findOrFail($id);
         return view('gamedecks/show', ['gamedeck' => $gamedeck]);
     }
     public function create(): View
@@ -81,7 +81,7 @@ class GamedeckController extends Controller
 
     public function deckBuilder(): View
     {
-        $camps = \App\Models\Camp::with('cards')->where('is_active', true)->get();
+        $camps = Camp::with('cards')->where('is_active', true)->get();
         return view('gamedecks/deck-builder', compact('camps'));
     }
 }

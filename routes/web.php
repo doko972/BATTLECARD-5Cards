@@ -28,9 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-Route::prefix('admin')->name('admin.')->group(function(){
+Route::prefix('admin')->name('admin.')->group(function () {
 
     //Get Camps datas
     Route::get('/camps', 'App\Http\Controllers\CampController@index')->name('camp.index');
@@ -57,7 +57,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::delete('/camps/delete/{camp}', 'App\Http\Controllers\CampController@delete')->name('camp.delete');
 
 });
-Route::prefix('admin')->name('admin.')->group(function(){
+Route::prefix('admin')->name('admin.')->group(function () {
 
     //Get Cards datas
     Route::get('/cards', 'App\Http\Controllers\CardController@index')->name('card.index');
@@ -84,7 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
     Route::delete('/cards/delete/{card}', 'App\Http\Controllers\CardController@delete')->name('card.delete');
 
 });
-Route::prefix('admin')->name('admin.')->group(function(){
+Route::prefix('admin')->name('admin.')->group(function () {
 
     //Get Games datas
     Route::get('/games', 'App\Http\Controllers\GameController@index')->name('game.index');
@@ -110,8 +110,12 @@ Route::prefix('admin')->name('admin.')->group(function(){
     //Delete Game
     Route::delete('/games/delete/{game}', 'App\Http\Controllers\GameController@delete')->name('game.delete');
 
+    Route::post('/games/{id}/join', 'App\Http\Controllers\GameController@join')->name('game.join');
+    Route::get('/games/{id}/play', 'App\Http\Controllers\GameController@play')->name('game.play');
+    Route::get('/games/{id}/spectate', 'App\Http\Controllers\GameController@spectate')->name('game.spectate');
+
 });
-Route::prefix('admin')->name('admin.')->group(function(){
+Route::prefix('admin')->name('admin.')->group(function () {
 
     //Get Gamedecks datas
     Route::get('/gamedecks', 'App\Http\Controllers\GamedeckController@index')->name('gamedeck.index');
