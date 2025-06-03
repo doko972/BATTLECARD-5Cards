@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,33 +15,31 @@ class GameFormRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        $isRequired = request()->isMethod("POST") ?"required|": "";
+        $isRequired = request()->isMethod("POST") ? "required|" : "";
+
         return [
-            //
-            'name' => $isRequired.'string',
-			'status' => $isRequired.'string',
-			'player1_id' => $isRequired.'string',
-			'player2_id' => $isRequired.'string',
-			'winner_id' => $isRequired.'string',
-			'current_turn' => $isRequired.'string',
-			'turn_number' => $isRequired.'string',
-			'started_at' => $isRequired.'string',
-			'finished_at' => $isRequired.'string',
-			'player1_id' => $isRequired.'string',
-			'player2_id' => $isRequired.'string',
-			'winner_id' => $isRequired.'string'
-			
+            'name' => 'nullable|string|max:255',
+            'game_name' => 'nullable|string|max:255',  // Pour la création depuis deck-builder
+            'deck_cards' => 'nullable|string',         // Pour les cartes sélectionnées
+            'status' => 'nullable|string|in:waiting,in_progress,finished',
+            'player1_id' => 'nullable|integer|exists:users,id',
+            'player2_id' => 'nullable|integer|exists:users,id',
+            'winner_id' => 'nullable|integer|exists:users,id',
+            'current_turn' => 'nullable|integer|min:1|max:2',
+            'turn_number' => 'nullable|integer|min:1',
+            'started_at' => 'nullable|date',
+            'finished_at' => 'nullable|date',
         ];
     }
+
     public function prepareForValidation()
     {
+        // Nettoyage et préparation des données si nécessaire
         $this->merge([
-            
+            // Rien pour l'instant
         ]);
     }
 }

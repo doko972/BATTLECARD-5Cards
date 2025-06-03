@@ -110,7 +110,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     //Delete Game
     Route::delete('/games/delete/{game}', 'App\Http\Controllers\GameController@delete')->name('game.delete');
 
-    Route::post('/games/{id}/join', 'App\Http\Controllers\GameController@join')->name('game.join');
+    Route::get('/games/{id}/join', 'App\Http\Controllers\GameController@join')->name('game.join');
+    Route::get('/games/{id}/select-deck', 'App\Http\Controllers\GameController@selectDeck')->name('game.select-deck');
+    Route::post('/games/{id}/join-with-deck', 'App\Http\Controllers\GameController@joinWithDeck')->name('game.join-with-deck');
     Route::get('/games/{id}/play', 'App\Http\Controllers\GameController@play')->name('game.play');
     Route::get('/games/{id}/spectate', 'App\Http\Controllers\GameController@spectate')->name('game.spectate');
 
@@ -141,5 +143,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     //Delete Gamedeck
     Route::delete('/gamedecks/delete/{gamedeck}', 'App\Http\Controllers\GamedeckController@delete')->name('gamedeck.delete');
 
-    Route::get('/deck-builder', 'App\Http\Controllers\GamedeckController@deckBuilder')->name('gamedeck.deck-builder');
+    // Route::get('/deck-builder', 'App\Http\Controllers\GamedeckController@deckBuilder')->name('gamedeck.deck-builder');
+    Route::get('/deck-builder', 'App\Http\Controllers\GamedeckController@deckBuilder')->name('deck-builder');
 });

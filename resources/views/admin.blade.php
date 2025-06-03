@@ -68,7 +68,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.gamedeck.deck-builder') }}">
+                            <a class="nav-link" href="{{ route('admin.deck-builder') }}">
                                 deck-builder
                             </a>
                         </li>

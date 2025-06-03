@@ -447,7 +447,7 @@
                 <i class="fas fa-plus-circle"></i>
                 <h3>Aucune partie en attente</h3>
                 <p>Soyez le premier à créer une partie épique !</p>
-                <a href="{{ route('admin.gamedeck.deck-builder') }}" class="create-game-btn">
+                <a href="{{ route('admin.deck-builder') }}" class="create-game-btn">
                     🚀 Créer une Partie
                 </a>
             </div>
@@ -626,7 +626,7 @@
                 <i class="fas fa-user"></i>
                 <h3>Aucune partie personnelle</h3>
                 <p>Créez votre première partie pour commencer !</p>
-                <a href="{{ route('admin.gamedeck.deck-builder') }}" class="create-game-btn">
+                <a href="{{ route('admin.deck-builder') }}" class="create-game-btn">
                     🚀 Créer une Partie
                 </a>
             </div>
@@ -681,7 +681,7 @@
 
     <!-- Bouton flottant pour créer une partie -->
     <div style="position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;">
-        <a href="{{ route('admin.gamedeck.deck-builder') }}" class="create-game-btn" style="border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        <a href="{{ route('admin.deck-builder') }}" class="create-game-btn" style="border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
             <i class="fas fa-plus"></i>
         </a>
     </div>
